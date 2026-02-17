@@ -35,50 +35,58 @@ static juce::String stringFromDecibels(float value, int)
 
 Parameters::Parameters(juce::AudioProcessorValueTreeState& apvts)
 {
-    castParameter(apvts, gainParamID, gainParam);
+    castParameter(apvts, outputGainParamID, outputGainParam);
     castParameter(apvts, rateParamID, rateParam);
     castParameter(apvts, depthParamID, depthParam);
     castParameter(apvts, mixParamID, mixParam);
     castParameter(apvts, bypassParamID, bypassParam);
+    castParameter(apvts, waveParamID, waveParam);
+    castParameter(apvts, pulseWidthParamID, pulseWidthParam);
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterLayout()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
     
-    layout.add(std::make_unique<juce::AudioParameterFloat>(gainParamID, "Output Gain", juce::NormalisableRange<float> {-12.0f, 12.0f}, 0, juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromDecibels)));;
+    layout.add(std::make_unique<juce::AudioParameterFloat>(outputGainParamID, "Output Gain", juce::NormalisableRange<float> {-12.0f, 12.0f}, 0, juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromDecibels)));;
     
     layout.add(std::make_unique<juce::AudioParameterFloat>(rateParamID, "Rate", juce::NormalisableRange<float> {minRate, maxRate, 0.01f}, 1.2f));
     layout.add(std::make_unique<juce::AudioParameterFloat>(depthParamID, "Depth", juce::NormalisableRange<float> {minDepth, maxDepth, 0.01f}, 2.0f));
     layout.add(std::make_unique<juce::AudioParameterFloat>(mixParamID, "Mix", juce::NormalisableRange<float> {0.0f, 1.0f, 0.01f}, 0.8f));
-    layout.add(std::make_unique<juce::AudioParameterBool>(bypassParamID, "Bypass", false));
+    layout.add(std::make_unique<juce::AudioParameterBool>(bypassParamID, "Bypass", true));
+    layout.add(std::make_unique<juce::AudioParameterFloat>(waveParamID, "Wave", juce::NormalisableRange<float> {0.0f, 1.0f, 0.01f}, 0.5f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>(pulseWidthParamID, "PW", juce::NormalisableRange<float> {0.1f, 0.9f, 0.01}, 0.5f));
     
     return layout;
 }
 
 void Parameters::update() noexcept
 {
-    gainSmoother.setTargetValue(juce::Decibels::decibelsToGain(gainParam->get()));
+    outputGainSmoother.setTargetValue(juce::Decibels::decibelsToGain(outputGainParam->get()));
     rateSmoother.setTargetValue(rateParam->get());
     depthSmoother.setTargetValue(depthParam->get());
     mixSmoother.setTargetValue(mixParam->get());
-    bypassParam->get();
+    bypassed = bypassParam->get();
+    waveSmoother.setTargetValue(waveParam->get());
+    pulseWidthSmoother.setTargetValue(pulseWidthParam->get());
 }
 
 void Parameters::prepareToPlay(double sampleRate) noexcept
 {
     double duration = 0.002f;
-    gainSmoother.reset(sampleRate, duration);
+    outputGainSmoother.reset(sampleRate, duration);
     rateSmoother.reset(sampleRate, duration);
     depthSmoother.reset(sampleRate, duration);
     mixSmoother.reset(sampleRate, duration);
+    waveSmoother.reset(sampleRate, duration);
+    pulseWidthSmoother.reset(sampleRate, duration);
    
 }
 
 void Parameters::reset() noexcept
 {
-    gain = 1.0f;
-    gainSmoother.setCurrentAndTargetValue(juce::Decibels::decibelsToGain(gainParam->get()));
+    outputGain = 1.0f;
+    outputGainSmoother.setCurrentAndTargetValue(juce::Decibels::decibelsToGain(outputGainParam->get()));
     
     rate = 1.0f;
     rateSmoother.setCurrentAndTargetValue(rateParam->get());
@@ -88,12 +96,20 @@ void Parameters::reset() noexcept
     
     mix = 0.8f;
     mixSmoother.setCurrentAndTargetValue(mixParam->get());
+    
+    wave = 0.0f;
+    waveSmoother.setCurrentAndTargetValue(waveParam->get());
+    
+    pulseWidth = 0.5f;
+    pulseWidthSmoother.setCurrentAndTargetValue(pulseWidthParam->get());
 }
 
 void Parameters::smoothen() noexcept
 {
-    gain = gainSmoother.getNextValue();
+    outputGain = outputGainSmoother.getNextValue();
     rate = rateSmoother.getNextValue();
     depth = depthSmoother.getNextValue();
     mix = mixSmoother.getNextValue();
+    wave = waveSmoother.getNextValue();
+    pulseWidth = pulseWidthSmoother.getNextValue();
 }

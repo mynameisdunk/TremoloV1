@@ -19,13 +19,17 @@ TremoloV1AudioProcessorEditor::TremoloV1AudioProcessorEditor (TremoloV1AudioProc
 {
     addAndMakeVisible(rateKnob);
     addAndMakeVisible(depthKnob);
-    addAndMakeVisible(mixKnob);
+//    addAndMakeVisible(mixKnob);
+    addAndMakeVisible(outputGainKnob);
+    addAndMakeVisible(waveKnob);
+    addAndMakeVisible(pulseWidthKnob);
 
     juce::LookAndFeel::setDefaultLookAndFeel(RotaryKnobLookAndFeel::get());
     
     bypassButton.setLookAndFeel(&pedalButtonLookAndFeel);
     bypassButton.setClickingTogglesState(true);
-    bypassButton.setBounds(0, 0, 120, 40);
+    bypassButton.setBounds(0, 0, 180, 60);
+
     addAndMakeVisible(bypassButton);
     bypassButton.onClick = [this]() {repaint();};
     
@@ -60,7 +64,7 @@ void TremoloV1AudioProcessorEditor::paint (juce::Graphics& g)
     
     //==============================================================================
 // logo box drop shadow colour
-    auto logoOuter = juce::Rectangle<int>(60, 248, 176, 60);
+    auto logoOuter = juce::Rectangle<int>(60, 308, 176, 60);
     auto corner = 8.0f;
     juce::Path logoPath;
     logoPath.addRoundedRectangle(logoOuter, corner);
@@ -69,7 +73,7 @@ void TremoloV1AudioProcessorEditor::paint (juce::Graphics& g)
     
 // logo box
     g.setColour(juce::Colours::black);
-    g.fillRoundedRectangle(60, 243, 176, 60, corner);
+    g.fillRoundedRectangle(60, 303, 176, 60, corner);
     
 // setting up font
     auto f = Fonts::getFont(48.0f);
@@ -79,12 +83,12 @@ void TremoloV1AudioProcessorEditor::paint (juce::Graphics& g)
 
 // logo box infill
     g.setColour(juce::Colours::coral);
-    g.fillRoundedRectangle(66, 249, 164, 48, corner);
+    g.fillRoundedRectangle(66, 309, 164, 48, corner);
     //==============================================================================
     
     g.setFont(f);
     g.setColour(juce::Colours::black);
-    g.drawText(tremolo, 48, 222, 200, 100, juce::Justification::centred);
+    g.drawText(tremolo, 48, 282, 200, 100, juce::Justification::centred);
     
     auto fontSmall = Fonts::getFont(24.0f);
     g.setFont(fontSmall);
@@ -104,7 +108,7 @@ void TremoloV1AudioProcessorEditor::paint (juce::Graphics& g)
     bool isOn = bypassButton.getToggleState();
     auto ledArea = juce::Rectangle<float>(getWidth()/2.0f - 6.0f, 20.0f, 12.0f, 12.0f);
     
-    g.setColour(isOn ? juce::Colours::red : juce::Colours::darkred);
+    g.setColour(isOn ? juce::Colours::darkred : juce::Colours::red);
     g.fillEllipse(ledArea);
     auto highlight = ledOuter.reduced(3);
     g.setColour(juce::Colours::white.withAlpha(0.1f));
@@ -133,11 +137,15 @@ void TremoloV1AudioProcessorEditor::paint (juce::Graphics& g)
 
 void TremoloV1AudioProcessorEditor::resized()
 {
-    auto bounds = getLocalBounds();
+//    auto bounds = getLocalBounds();
     
     rateKnob.setBounds(32, 35, 100, 116);
     depthKnob.setBounds(rateKnob.getRight() + 32, 35, 100, 116);
-    mixKnob.setBounds(108, 126, 80, 96);
+    outputGainKnob.setBounds(depthKnob.getX(), depthKnob.getBottom() + 10, 100, 116);
+    waveKnob.setBounds(rateKnob.getX(), rateKnob.getBottom() + 10, 100, 116);
+    pulseWidthKnob.setBounds(123, 125, 50, 66);
+    
+//    mixKnob.setBounds(108, 126, 80, 96);
     bypassButton.setBounds(88, 398, 120, 60);
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..

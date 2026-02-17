@@ -10,9 +10,9 @@
 
 #include <JuceHeader.h>
 #include "Parameters.h"
-#include "BBD.h"
-#include "LFO.h"
+#include "Tremolo.h"
 #include "Compander.h"
+#include "Tremolo.h"
 
 //==============================================================================
 /**
@@ -71,16 +71,14 @@ private:
     
 // INSTANCES
     Parameters params;
-    BBD bucketB;
-    sineLFO sinLFO;
-    triangleLFO triLFO;
+
     EnvelopeFollower mEnvelopeFollower;
     Compressor mCompressor;
     Expander mExpander;
+    Tremolo mTremolo;
     
     
     float rateParamInHz = 1.0f;
-    float lfoValue = 0.0f;
     
     float scaledDepth; 
     float lastScaledDepth;

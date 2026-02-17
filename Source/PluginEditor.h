@@ -33,12 +33,16 @@ private:
     RotaryKnob mixKnob {"MIX", audioProcessor.apvts, mixParamID, false, false};
     RotaryKnob rateKnob {"RATE", audioProcessor.apvts, rateParamID, false, false};
     RotaryKnob depthKnob {"DEPTH", audioProcessor.apvts, depthParamID, false, false};
+    RotaryKnob outputGainKnob {"OUTPUT", audioProcessor.apvts, outputGainParamID, true, false};
+    RotaryKnob waveKnob {"WAVE", audioProcessor.apvts, waveParamID, false, false};
+    RotaryKnob pulseWidthKnob {"PW", audioProcessor.apvts, pulseWidthParamID, false, false};
     
     juce::GroupComponent paramGroup;
     
     juce::DropShadow edgeBlur {juce::Colours::black, 6, {0, 0}};
     
     juce::TextButton bypassButton;
+    
     juce::AudioProcessorValueTreeState::ButtonAttachment bypassAttachment {audioProcessor.apvts, bypassParamID.getParamID(), bypassButton};
     
     PedalButtonLookAndFeel pedalButtonLookAndFeel;

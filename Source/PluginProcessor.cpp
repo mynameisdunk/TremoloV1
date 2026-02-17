@@ -11,9 +11,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "DelayLine.h"
-#include "BBD.h"
-#include "Compander.h"
+
 
 //==============================================================================
 TremoloV1AudioProcessor::TremoloV1AudioProcessor()
@@ -95,7 +93,7 @@ void TremoloV1AudioProcessor::changeProgramName (int index, const juce::String& 
 
 juce::AudioProcessorParameter* TremoloV1AudioProcessor::getBypassParameter() const
 {
-return params.bypassParam;
+    return params.bypassParam;
 }
 
 //==============================================================================
@@ -109,12 +107,9 @@ void TremoloV1AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
     spec.maximumBlockSize = juce::uint32(samplesPerBlock);
     spec.numChannels = 2;
     
-    sinLFO.prepare(sampleRate);
-    sinLFO.reset();
-    
-    triLFO.prepare(sampleRate);
-    sinLFO.reset();
-    
+    mTremolo.prepare(sampleRate);
+    mTremolo.reset();
+        
 // COMPANDER
     mEnvelopeFollower.prepare(sampleRate);
     mEnvelopeFollower.reset();
@@ -153,10 +148,7 @@ void TremoloV1AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[
         buffer.clear(i, 0, buffer.getNumSamples());
     
     rateParamInHz = params.rate;
-    sinLFO.setFrequency(rateParamInHz);
-    triLFO.setFrequency(rateParamInHz);
-    
-    float sampleRate = float(getSampleRate());
+   
     
     float* channelDataL = buffer.getWritePointer(0);
     float* channelDataR = buffer.getWritePointer(1);
@@ -166,40 +158,32 @@ void TremoloV1AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[
     params.update();
     params.smoothen();
     
+    mTremolo.setRate(params.rate);
+    mTremolo.setDepth(params.depth);
+    mTremolo.setBlend(params.wave);
+    mTremolo.setPulseWidth(params.pulseWidth);
+    
     
     for (int samp = 0; samp < buffer.getNumSamples(); ++samp )
         {
-            //   ============  Sine LFO - Don't delete will adapt for use later ====
-            lfoValue = sinLFO.process(); // LFO position -1 to 1
-            
-            lfoValue = triLFO.process(); // LFO position -1 to 1
-            
-            float gain = lfoValue;
             
             float dryL = channelDataL[samp];
             float dryR = channelDataR[samp];
+  
+            float wetL = mTremolo.process(dryL);
+            float wetR = mTremolo.process(dryR);
             
-            float compDryL = mCompressor.process(dryL);
-            float compDryR = mCompressor.process(dryR);
-            
-            float wetL = dryL * (params.depth * gain);
-            float wetR = dryR * (params.depth * gain);
-            
-            wetL = mExpander.process(wetL);
-            wetR = mExpander.process(wetR);
-            
-            float mixL = wetL;
-            float mixR = wetR;
-            
-            if (!params.bypassed)
+            float outputL = wetL;
+            float outputR = wetR;
+
+            if (params.bypassed)
             {
-                mixL = dryL;
-                mixR = dryR;
+                outputL = dryL;
+                outputR = dryR;
             }
-            
-            channelDataL[samp] =  mixL * params.gain;
-            channelDataR[samp] =  mixR * params.gain;
-            
+        
+            channelDataL[samp] =  outputL * params.outputGain;
+            channelDataR[samp] =  outputR * params.outputGain;
             
             
             

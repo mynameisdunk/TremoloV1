@@ -138,17 +138,17 @@ public:
 
         bool isOn = button.getToggleState();
 
-        float pressOffsetX = isOn ? 1.0f : 0.0f;
-        float pressOffsetY = isOn ? 1.0f : 0.0f;
+        float pressOffsetX = isOn ? 0.0f : 1.0f;
+        float pressOffsetY = isOn ? 0.0f : 1.0f;
         g.addTransform(juce::AffineTransform::translation(pressOffsetX, pressOffsetY));
 
         g.setColour (juce::Colours::black);
         g.fillRoundedRectangle (bounds, 2.0f);
 // Lower Highlight
         g.setColour(juce::Colours::white.withAlpha(0.2f));
-        highlightX.setBounds(13.0f, 57.0f, 106.0f, 2.0f);
+        highlightX.setBounds(12.0f, 56.0f, 106.0f, 2.0f);
         g.fillRoundedRectangle(highlightX, 0.0f);
-        highlightY.setBounds(117.0f, 15.0f, 2.0f, 42.0f);
+        highlightY.setBounds(116.0f, 14.0f, 2.0f, 42.0f);
         g.fillRoundedRectangle(highlightY, 0.0f);
         
 // Top Highlight

@@ -9,12 +9,8 @@
             file="../../../Documents/FONTS/Google_Sans_Code/static/GoogleSansCode-Bold.ttf"/>
     </GROUP>
     <GROUP id="{F4194CDB-A3B6-8AAE-94FF-6EA0A91D4BE4}" name="Source">
-      <FILE id="xwoTlg" name="BBD.cpp" compile="1" resource="0" file="Source/BBD.cpp"/>
-      <FILE id="hLHotA" name="BBD.h" compile="0" resource="0" file="Source/BBD.h"/>
       <FILE id="zBcNpT" name="Compander.cpp" compile="1" resource="0" file="Source/Compander.cpp"/>
       <FILE id="nCSU7J" name="Compander.h" compile="0" resource="0" file="Source/Compander.h"/>
-      <FILE id="StqCvM" name="DelayLine.cpp" compile="1" resource="0" file="Source/DelayLine.cpp"/>
-      <FILE id="qc4XLm" name="DelayLine.h" compile="0" resource="0" file="Source/DelayLine.h"/>
       <FILE id="EA0VcT" name="LFO.cpp" compile="1" resource="0" file="Source/LFO.cpp"/>
       <FILE id="V4JSMW" name="LFO.h" compile="0" resource="0" file="Source/LFO.h"/>
       <FILE id="pCdnpc" name="LookAndFeel.cpp" compile="1" resource="0" file="Source/LookAndFeel.cpp"/>
@@ -30,6 +26,8 @@
             file="Source/PluginProcessor.h"/>
       <FILE id="Yihdfl" name="RotaryKnob.cpp" compile="1" resource="0" file="Source/RotaryKnob.cpp"/>
       <FILE id="DbbDoI" name="RotaryKnob.h" compile="0" resource="0" file="Source/RotaryKnob.h"/>
+      <FILE id="iaDnbo" name="Tremolo.h" compile="0" resource="0" file="Source/Tremolo.h"/>
+      <FILE id="PVBOPE" name="WaveSelector.h" compile="0" resource="0" file="Source/WaveSelector.h"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>
