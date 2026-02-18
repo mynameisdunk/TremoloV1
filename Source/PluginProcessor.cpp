@@ -110,8 +110,8 @@ void TremoloV1AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
     mTremolo.prepare(sampleRate);
     mTremolo.reset();
     
-    mJfetBoost.prepare(sampleRate);
-    mJfetBoost.reset();
+//    mJfetBoost.prepare(sampleRate);
+//    mJfetBoost.reset();
         
 // COMPANDER
     
@@ -161,36 +161,43 @@ void TremoloV1AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[
     mTremolo.setBlend(params.wave);
     mTremolo.setPulseWidth(params.pulseWidth);
     
-    
-    
-    
     for (int samp = 0; samp < buffer.getNumSamples(); ++samp )
         {
             
             float dryL = channelDataL[samp];
             float dryR = channelDataR[samp];
             
-            float bypassedDryL = dryL;
-            float bypassedDryR = dryR;
-            float jfetDryL = 0.0f;
-            float jfetDryR = 0.0f;
+            float bypassedDryL = dryL;  float bypassedDryR = dryR;
+            float jfetDryL = 0.0f;  float jfetDryR = 0.0f;
+            float wetL = 0.0f;  float wetR = 0.0f;
             
-            mJfetBoost.setDriveLevel(params.outputGain);
+            float gainInDb = juce::Decibels::gainToDecibels(params.outputGain);
+            float normalised = juce::jmap(gainInDb, 0.0f, 6.0f, 0.0f, 1.0f);
+            float driveAmount = juce::jmap(gainInDb, 0.0f, 6.0f, 1.0f, 2.5f);
+                                           
+            mJfetBoost.setDriveLevel(driveAmount);
             
-            if (params.outputGain > 0.0f)
+            if (gainInDb > 0.0f)
             {
                 jfetDryL = mJfetBoost.process(dryL);
                 jfetDryR = mJfetBoost.process(dryR);
                 
-                float wetAmount = juce::jmin(params.outputGain, 1.0f);
+                float wetAmount = juce::jmin(normalised, 1.0f);
                 float dryAmount = 1.0f - wetAmount;
                 
                 jfetDryL = (jfetDryL * wetAmount) + (dryL * dryAmount);
                 jfetDryR = (jfetDryR * wetAmount) + (dryR * dryAmount);
+                
+                wetL = mTremolo.process(jfetDryL);
+                wetR = mTremolo.process(jfetDryR);
             }
             
-            float wetL = mTremolo.process(jfetDryL);
-            float wetR = mTremolo.process(jfetDryR);
+            else
+            {
+                wetL = mTremolo.process(dryL);
+                wetR = mTremolo.process(dryR);
+            }
+            
             
             float outputL = wetL;
             float outputR = wetR;

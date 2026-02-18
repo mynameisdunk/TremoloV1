@@ -94,3 +94,35 @@ class squareLFO
 
 
 };
+
+//================================================================================================================================================================================
+
+
+
+class clippedSineLFO
+{
+public:
+    clippedSineLFO();
+    
+    static constexpr float twoPi = juce::MathConstants<float>::twoPi;
+    
+    void prepare(float sampleRate);
+    void setFrequency (float frequencyHz);
+    float process(); // Literally the LFO code
+    void reset();
+    
+private:
+    
+    float mPhase;
+    float mIncrement;
+    float mFrequency;
+    float mSampleRate;
+    float mThreshold;
+
+    
+    void calculateIncrement()
+    {
+        mIncrement = mFrequency / mSampleRate;
+    }
+
+};

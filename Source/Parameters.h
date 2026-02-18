@@ -32,7 +32,7 @@ public:
 //STATICS AND CONSTANTS (whatever that means)
     
     static constexpr float minRate = 0.1f;
-    static constexpr float maxRate = 5.0f;
+    static constexpr float maxRate = 12.0f;
     
     static constexpr float minDepth = 0.01f;
     static constexpr float maxDepth = 1.0f;

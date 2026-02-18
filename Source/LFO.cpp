@@ -146,7 +146,7 @@ float squareLFO::process() // Literally the LFO code
         mPhase += mIncrement;
         
         // One-pole smoothing filter
-        float smoothingCoeff = 0.9f;  // 0.9-0.99 range
+        float smoothingCoeff = 0.8f;  // 0.9-0.99 range
         mLastOutput = smoothingCoeff * mLastOutput + (1.0f - smoothingCoeff) * square;
         
         return mLastOutput;
@@ -156,3 +156,53 @@ float squareLFO::process() // Literally the LFO code
     {
         mPhase = 0.0f;
     }
+
+//================================================================================================================================================================================
+
+
+clippedSineLFO::clippedSineLFO()
+    {
+        mPhase = 0.0f;
+        mIncrement = 0.0f;
+        mFrequency = 1000.0f; // LFO frequency also known as RATE - set by setFreq function. Parameter value passed as argument
+        mSampleRate = 44100.0f;
+        mThreshold = 0.2f;
+       
+    }
+    
+void clippedSineLFO::prepare(float sampleRate)
+    {
+        mSampleRate = sampleRate;
+        
+        calculateIncrement();
+    }
+    
+void clippedSineLFO::setFrequency (float frequencyHz)
+    {
+        mFrequency = frequencyHz;
+        calculateIncrement();
+    }
+    
+    float clippedSineLFO::process() // Literally the LFO code
+    {
+        float sine = std::sin(mPhase * twoPi);
+        mPhase += mIncrement;
+        
+        if (mPhase >= 1.0f)
+        {
+            mPhase -= 1.0f;
+        }
+        
+        float clipped = juce::jlimit(-mThreshold, mThreshold, sine);
+        clipped /= mThreshold;
+        
+        return clipped;
+    }
+    
+    void clippedSineLFO::reset()
+    {
+        mPhase = 0.0f;
+    }
+    
+
+//=====================================================================================================================================================================================
