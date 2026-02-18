@@ -11,8 +11,7 @@
 #include <JuceHeader.h>
 #include "Parameters.h"
 #include "Tremolo.h"
-#include "Compander.h"
-#include "Tremolo.h"
+#include "Boost.h"
 
 //==============================================================================
 /**
@@ -71,20 +70,15 @@ private:
     
 // INSTANCES
     Parameters params;
-
-    EnvelopeFollower mEnvelopeFollower;
-    Compressor mCompressor;
-    Expander mExpander;
     Tremolo mTremolo;
-    
+    jfetBoost mJfetBoost;
     
     float rateParamInHz = 1.0f;
     
     float scaledDepth; 
     float lastScaledDepth;
     float k = std::tanh(params.rate);
-    
-    
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TremoloV1AudioProcessor)
 };

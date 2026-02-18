@@ -48,7 +48,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
     
-    layout.add(std::make_unique<juce::AudioParameterFloat>(outputGainParamID, "Output Gain", juce::NormalisableRange<float> {-12.0f, 12.0f}, 0, juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromDecibels)));;
+    layout.add(std::make_unique<juce::AudioParameterFloat>(outputGainParamID, "Output Gain", juce::NormalisableRange<float> {-12.0f, 6.0f}, 0, juce::AudioParameterFloatAttributes().withStringFromValueFunction(stringFromDecibels)));;
     
     layout.add(std::make_unique<juce::AudioParameterFloat>(rateParamID, "Rate", juce::NormalisableRange<float> {minRate, maxRate, 0.01f}, 1.2f));
     layout.add(std::make_unique<juce::AudioParameterFloat>(depthParamID, "Depth", juce::NormalisableRange<float> {minDepth, maxDepth, 0.01f}, 2.0f));

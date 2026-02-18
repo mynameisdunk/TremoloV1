@@ -7,8 +7,10 @@
     <GROUP id="{D1516204-8E23-90E9-BDC0-26B03FAE5D15}" name="Assets">
       <FILE id="s40ElX" name="GoogleSansCode-Bold.ttf" compile="0" resource="1"
             file="../../../Documents/FONTS/Google_Sans_Code/static/GoogleSansCode-Bold.ttf"/>
+      <FILE id="JOmFnC" name="Logo V1.png" compile="0" resource="1" file="../../../Documents/Code/Resources/Logo V1.png"/>
     </GROUP>
     <GROUP id="{F4194CDB-A3B6-8AAE-94FF-6EA0A91D4BE4}" name="Source">
+      <FILE id="TOaKaH" name="Boost.h" compile="0" resource="0" file="Source/Boost.h"/>
       <FILE id="zBcNpT" name="Compander.cpp" compile="1" resource="0" file="Source/Compander.cpp"/>
       <FILE id="nCSU7J" name="Compander.h" compile="0" resource="0" file="Source/Compander.h"/>
       <FILE id="EA0VcT" name="LFO.cpp" compile="1" resource="0" file="Source/LFO.cpp"/>

@@ -109,14 +109,12 @@ void TremoloV1AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
     
     mTremolo.prepare(sampleRate);
     mTremolo.reset();
+    
+    mJfetBoost.prepare(sampleRate);
+    mJfetBoost.reset();
         
 // COMPANDER
-    mEnvelopeFollower.prepare(sampleRate);
-    mEnvelopeFollower.reset();
-    mCompressor.prepare(sampleRate);
-    mCompressor.reset();
-    mExpander.prepare(sampleRate);
-    mExpander.reset();
+    
     
     rateParamInHz = 1.0f;
 // FILTERS
@@ -164,22 +162,43 @@ void TremoloV1AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, [[
     mTremolo.setPulseWidth(params.pulseWidth);
     
     
+    
+    
     for (int samp = 0; samp < buffer.getNumSamples(); ++samp )
         {
             
             float dryL = channelDataL[samp];
             float dryR = channelDataR[samp];
-  
-            float wetL = mTremolo.process(dryL);
-            float wetR = mTremolo.process(dryR);
+            
+            float bypassedDryL = dryL;
+            float bypassedDryR = dryR;
+            float jfetDryL = 0.0f;
+            float jfetDryR = 0.0f;
+            
+            mJfetBoost.setDriveLevel(params.outputGain);
+            
+            if (params.outputGain > 0.0f)
+            {
+                jfetDryL = mJfetBoost.process(dryL);
+                jfetDryR = mJfetBoost.process(dryR);
+                
+                float wetAmount = juce::jmin(params.outputGain, 1.0f);
+                float dryAmount = 1.0f - wetAmount;
+                
+                jfetDryL = (jfetDryL * wetAmount) + (dryL * dryAmount);
+                jfetDryR = (jfetDryR * wetAmount) + (dryR * dryAmount);
+            }
+            
+            float wetL = mTremolo.process(jfetDryL);
+            float wetR = mTremolo.process(jfetDryR);
             
             float outputL = wetL;
             float outputR = wetR;
 
             if (params.bypassed)
             {
-                outputL = dryL;
-                outputR = dryR;
+                outputL = bypassedDryL;
+                outputR = bypassedDryR;
             }
         
             channelDataL[samp] =  outputL * params.outputGain;
