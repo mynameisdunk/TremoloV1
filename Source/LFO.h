@@ -108,6 +108,7 @@ public:
     
     void prepare(float sampleRate);
     void setFrequency (float frequencyHz);
+    void setPulseWidth(float pulseWidth);
     float process(); // Literally the LFO code
     void reset();
     
@@ -118,6 +119,7 @@ private:
     float mFrequency;
     float mSampleRate;
     float mThreshold;
+    float mPulseWidth;
 
     
     void calculateIncrement()

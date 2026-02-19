@@ -55,7 +55,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout Parameters::createParameterL
     layout.add(std::make_unique<juce::AudioParameterFloat>(mixParamID, "Mix", juce::NormalisableRange<float> {0.0f, 1.0f, 0.01f}, 0.8f));
     layout.add(std::make_unique<juce::AudioParameterBool>(bypassParamID, "Bypass", true));
     layout.add(std::make_unique<juce::AudioParameterFloat>(waveParamID, "Wave", juce::NormalisableRange<float> {0.0f, 1.0f, 0.01f}, 0.5f));
-    layout.add(std::make_unique<juce::AudioParameterFloat>(pulseWidthParamID, "PW", juce::NormalisableRange<float> {0.1f, 0.9f, 0.01}, 0.5f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>(pulseWidthParamID, "PW", juce::NormalisableRange<float> {0.0f, 1.0f, 0.01}, 0.5f));
     
     return layout;
 }

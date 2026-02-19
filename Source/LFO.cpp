@@ -167,6 +167,7 @@ clippedSineLFO::clippedSineLFO()
         mFrequency = 1000.0f; // LFO frequency also known as RATE - set by setFreq function. Parameter value passed as argument
         mSampleRate = 44100.0f;
         mThreshold = 0.2f;
+        mPulseWidth = 0.0f;
        
     }
     
@@ -182,8 +183,13 @@ void clippedSineLFO::setFrequency (float frequencyHz)
         mFrequency = frequencyHz;
         calculateIncrement();
     }
+
+void clippedSineLFO::setPulseWidth (float pulseWidth)
+    {
+        mPulseWidth = pulseWidth;
+    }
     
-    float clippedSineLFO::process() // Literally the LFO code
+float clippedSineLFO::process() // Literally the LFO code
     {
         float sine = std::sin(mPhase * twoPi);
         mPhase += mIncrement;
@@ -192,14 +198,16 @@ void clippedSineLFO::setFrequency (float frequencyHz)
         {
             mPhase -= 1.0f;
         }
+        float offset = juce::jmap(mPulseWidth, 0.0f, 1.0f, -0.8f, 0.7f);
+        float shifted = sine + offset;
         
-        float clipped = juce::jlimit(-mThreshold, mThreshold, sine);
+        float clipped = juce::jlimit(-mThreshold, mThreshold, shifted);
         clipped /= mThreshold;
         
         return clipped;
     }
     
-    void clippedSineLFO::reset()
+void clippedSineLFO::reset()
     {
         mPhase = 0.0f;
     }

@@ -37,6 +37,7 @@ public:
     void setPulseWidth(float pulseWidth)
     {
         mSquare.setPulseWidth(pulseWidth);
+        mClippedSine.setPulseWidth(pulseWidth);
     }
     
     
